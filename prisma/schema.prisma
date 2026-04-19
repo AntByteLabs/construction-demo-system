@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  icon        String
+  shortDesc   String
+  content     String
+  imageLabel  String
+  imageUrl    String?
+  features    String
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  bio         String
+  photoLabel  String
+  photoUrl    String?
+  email       String?
+  linkedin    String?
+  twitter     String?
+  facebook    String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  title          String
+  category       String
+  location       String
+  client         String
+  completionDate DateTime
+  description    String
+  content        String
+  coverLabel     String
+  coverUrl       String?
+  isFeatured     Boolean        @default(false)
+  isActive       Boolean        @default(true)
+  sortOrder      Int            @default(0)
+  images         ProjectImage[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  label     String
+  url       String?
+  caption   String?
+  sortOrder Int     @default(0)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model BlogCategory {
+  id    String     @id @default(cuid())
+  slug  String     @unique
+  name  String
+  posts BlogPost[]
+}
+
+model BlogPost {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  title          String
+  excerpt        String
+  content        String
+  coverLabel     String
+  coverUrl       String?
+  author         String
+  authorRole     String
+  readMinutes    Int          @default(5)
+  tags           String
+  status         String       @default("draft")
+  publishedAt    DateTime?
+  isFeatured     Boolean      @default(false)
+  categoryId     String?
+  category       BlogCategory? @relation(fields: [categoryId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model HomepageContent {
+  id                      String   @id @default("singleton")
+  heroEyebrow             String   @default("Construction Company")
+  heroTitle               String   @default("Where plans become projects.")
+  heroSubtitle            String   @default("From first conversation to final walkthrough, we turn plans into solid results — with clear communication, fair pricing, and craftsmanship that lasts.")
+  heroCtaLabel            String   @default("Request a Quote")
+  heroCtaHref             String   @default("/contact")
+  heroImageUrl            String?
+  heroImageLabel          String   @default("Wood frame structure under construction")
+  heroTestimonialQuote    String   @default("Professional, careful, and high-quality results on our deck and siding.")
+  heroTestimonialName     String   @default("Emily Rowland")
+  heroTestimonialRole     String   @default("Homeowner")
+  heroStat1Value          String   @default("500+")
+  heroStat1Label          String   @default("Projects completed")
+  heroStat2Value          String   @default("35+")
+  heroStat2Label          String   @default("Years in business")
+  heroStat3Value          String   @default("4.8")
+  heroStat3Label          String   @default("Average review")
+  featureBannerImageUrl   String?
+  featureBannerLabel      String   @default("Sun-dappled wood frame under construction")
+  updatedAt               DateTime @updatedAt
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  quote      String
+  name       String
+  role       String
+  photoUrl   String?
+  rating     Int      @default(5)
+  sortOrder  Int      @default(0)
+  isFeatured Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactInquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Media {
+  id         String   @id @default(cuid())
+  label      String
+  url        String?
+  filename   String?
+  mimeType   String?
+  sizeBytes  Int      @default(0)
+  category   String
+  aspectRatio String  @default("16/9")
+  createdAt  DateTime @default(now())
+}
+
+model Settings {
+  id              String @id @default("singleton")
+  logoUrl         String?
+  faviconUrl      String?
+  companyName     String @default("Antbytelabs Construction")
+  tagline         String @default("Building Tomorrow, Today")
+  description     String @default("Premium construction and engineering solutions for residential, commercial, and industrial projects across the nation.")
+  phone           String @default("+1 (555) 123-4567")
+  email           String @default("hello@antbytelabs.com")
+  address         String @default("2847 Industrial Parkway, Suite 400, Metro City, CA 90210")
+  hours           String @default("Mon–Fri: 8:00 AM – 6:00 PM")
+  facebook        String @default("https://facebook.com/antbytelabs")
+  twitter         String @default("https://twitter.com/antbytelabs")
+  linkedin        String @default("https://linkedin.com/company/antbytelabs")
+  instagram       String @default("https://instagram.com/antbytelabs")
+  youtube         String @default("https://youtube.com/@antbytelabs")
+  primaryColor    String @default("#1F2937")
+  secondaryColor  String @default("#F59E0B")
+  accentColor     String @default("#2563EB")
+  seoTitle        String @default("Antbytelabs Construction — Building Tomorrow, Today")
+  seoDescription  String @default("Premium construction services for residential, commercial, industrial, and renovation projects. 25+ years of excellence.")
+  seoKeywords     String @default("construction, builders, contractor, renovation, commercial construction")
+  updatedAt       DateTime @updatedAt
+}
