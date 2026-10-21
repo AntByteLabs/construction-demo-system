@@ -1,4 +1,5 @@
 "use server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -17,6 +18,7 @@ function extract(formData: FormData) {
 }
 
 export async function createTestimonial(formData: FormData) {
+  await requireAdmin();
   await prisma.testimonial.create({ data: extract(formData) });
   revalidatePath("/admin/testimonials");
   revalidatePath("/");
@@ -24,6 +26,7 @@ export async function createTestimonial(formData: FormData) {
 }
 
 export async function updateTestimonial(id: string, formData: FormData) {
+  await requireAdmin();
   await prisma.testimonial.update({ where: { id }, data: extract(formData) });
   revalidatePath("/admin/testimonials");
   revalidatePath("/");
@@ -31,6 +34,7 @@ export async function updateTestimonial(id: string, formData: FormData) {
 }
 
 export async function deleteTestimonial(id: string) {
+  await requireAdmin();
   await prisma.testimonial.delete({ where: { id } });
   revalidatePath("/admin/testimonials");
   revalidatePath("/");

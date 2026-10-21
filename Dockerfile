@@ -18,6 +18,9 @@ COPY . .
 # DATABASE_URL is required by `prisma generate` only as a placeholder.
 ENV DATABASE_URL="file:/tmp/build.db"
 RUN npx prisma generate
+# Pages read the database while prerendering, so the throwaway build DB
+# needs the tables.
+RUN npx prisma migrate deploy
 RUN npm run build
 
 # ---------- runner ----------

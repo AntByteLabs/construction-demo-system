@@ -1,8 +1,10 @@
 "use server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export async function saveSettings(formData: FormData) {
+  await requireAdmin();
   const data = {
     logoUrl: String(formData.get("logoUrl") ?? "").trim() || null,
     faviconUrl: String(formData.get("faviconUrl") ?? "").trim() || null,

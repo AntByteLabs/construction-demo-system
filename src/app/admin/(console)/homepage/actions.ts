@@ -1,8 +1,10 @@
 "use server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export async function saveHomepage(formData: FormData) {
+  await requireAdmin();
   const data = {
     heroEyebrow: String(formData.get("heroEyebrow") ?? ""),
     heroTitle: String(formData.get("heroTitle") ?? ""),

@@ -1,4 +1,5 @@
 "use server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -64,6 +65,7 @@ function extract(formData: FormData): Payload {
 }
 
 export async function createProject(formData: FormData) {
+  await requireAdmin();
   const data = extract(formData);
   const { galleryItems, ...rest } = data;
   await prisma.project.create({
@@ -87,6 +89,7 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: string, formData: FormData) {
+  await requireAdmin();
   const data = extract(formData);
   const { galleryItems, ...rest } = data;
   await prisma.$transaction(async (tx) => {
@@ -113,6 +116,7 @@ export async function updateProject(id: string, formData: FormData) {
 }
 
 export async function deleteProject(id: string) {
+  await requireAdmin();
   await prisma.project.delete({ where: { id } });
   revalidatePath("/admin/projects");
   revalidatePath("/projects");

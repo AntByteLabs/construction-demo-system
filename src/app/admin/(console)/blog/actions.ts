@@ -1,4 +1,5 @@
 "use server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -38,6 +39,7 @@ function extract(formData: FormData) {
 }
 
 export async function createPost(formData: FormData) {
+  await requireAdmin();
   await prisma.blogPost.create({ data: extract(formData) });
   revalidatePath("/admin/blog");
   revalidatePath("/blog");
@@ -46,6 +48,7 @@ export async function createPost(formData: FormData) {
 }
 
 export async function updatePost(id: string, formData: FormData) {
+  await requireAdmin();
   const data = extract(formData);
   await prisma.blogPost.update({ where: { id }, data });
   revalidatePath("/admin/blog");
@@ -56,6 +59,7 @@ export async function updatePost(id: string, formData: FormData) {
 }
 
 export async function deletePost(id: string) {
+  await requireAdmin();
   await prisma.blogPost.delete({ where: { id } });
   revalidatePath("/admin/blog");
   revalidatePath("/blog");

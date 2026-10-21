@@ -21,8 +21,8 @@ async function main() {
 
   await prisma.admin.create({
     data: {
-      email: "admin@antbytelabs.com",
-      password: "admin123",
+      email: process.env.ADMIN_EMAIL ?? "admin@antbytelabs.com",
+      password: "-", // unused: login checks ADMIN_EMAIL / ADMIN_PASSWORD (src/lib/auth.ts)
       name: "Demo Admin",
     },
   });

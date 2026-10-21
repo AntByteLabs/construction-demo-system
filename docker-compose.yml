@@ -16,6 +16,10 @@ services:
       # Set SEED_DB=1 in .env on the very first boot to populate demo data,
       # then remove it (or set to 0) so subsequent restarts don't re-seed.
       SEED_DB: "${SEED_DB:-0}"
+      # Admin login (required; nobody can log in without all three).
+      ADMIN_EMAIL: "${ADMIN_EMAIL}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+      SESSION_SECRET: "${SESSION_SECRET}"
     volumes:
       - app-db:/app/data
       - app-uploads:/app/public/uploads

@@ -1,4 +1,5 @@
 "use server";
+import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -20,6 +21,7 @@ function extract(formData: FormData) {
 }
 
 export async function createMember(formData: FormData) {
+  await requireAdmin();
   await prisma.teamMember.create({ data: extract(formData) });
   revalidatePath("/admin/team");
   revalidatePath("/team");
@@ -28,6 +30,7 @@ export async function createMember(formData: FormData) {
 }
 
 export async function updateMember(id: string, formData: FormData) {
+  await requireAdmin();
   await prisma.teamMember.update({ where: { id }, data: extract(formData) });
   revalidatePath("/admin/team");
   revalidatePath("/team");
@@ -36,6 +39,7 @@ export async function updateMember(id: string, formData: FormData) {
 }
 
 export async function deleteMember(id: string) {
+  await requireAdmin();
   await prisma.teamMember.delete({ where: { id } });
   revalidatePath("/admin/team");
   revalidatePath("/team");
